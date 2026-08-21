@@ -14,7 +14,7 @@ to answer "what changed".
 from __future__ import annotations
 
 from collections.abc import Iterable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import Any
 
 from . import canonical
@@ -86,15 +86,48 @@ class SBOM:
         }
 
     @classmethod
-    def from_dict(cls, raw: dict[str, Any]) -> SBOM:
+    def from_dict(cls, raw: Any) -> SBOM:
+        """Load a bill of materials from untrusted JSON.
+
+        Every failure here is a refusal with a reason. An SBOM that cannot be
+        parsed is not an empty SBOM: treating it as one would let a malformed
+        file through the very check that exists to say what is inside an image.
+        """
+        if not isinstance(raw, dict):
+            raise ValueError("an SBOM must be a JSON object")
         if raw.get("schema") != SCHEMA:
             raise ValueError(f"unknown SBOM schema {raw.get('schema')!r}")
-        return cls.of(
-            raw["artefact"],
-            raw["version"],
-            [Component(**c) for c in raw.get("components", [])],
-            **raw.get("metadata", {}),
-        )
+        for required in ("artefact", "version"):
+            if not isinstance(raw.get(required), str):
+                raise ValueError(f"SBOM {required!r} must be a string")
+        components_raw = raw.get("components", [])
+        if not isinstance(components_raw, list):
+            raise ValueError("SBOM 'components' must be a list")
+
+        known = {f.name for f in fields(Component)}
+        components = []
+        for entry in components_raw:
+            if not isinstance(entry, dict):
+                raise ValueError("each SBOM component must be a JSON object")
+            unknown = set(entry) - known
+            if unknown:
+                # Refused rather than ignored. A field this version does not
+                # understand may be the one that matters, and silently dropping
+                # it produces a diff that says nothing changed.
+                raise ValueError(
+                    f"unknown component field(s): {', '.join(sorted(unknown))}"
+                )
+            missing = {"name", "version"} - set(entry)
+            if missing:
+                raise ValueError(
+                    f"component missing required field(s): {', '.join(sorted(missing))}"
+                )
+            components.append(Component(**entry))
+
+        metadata = raw.get("metadata", {})
+        if not isinstance(metadata, dict):
+            raise ValueError("SBOM 'metadata' must be a JSON object")
+        return cls.of(raw["artefact"], raw["version"], components, **metadata)
 
     @property
     def digest(self) -> str:

@@ -148,11 +148,19 @@ class Manifest:
                 "supplied; a check that cannot run is a check that failed"
             )
         payload = canonical.canonical_json(self.to_be_signed()).encode("utf-8")
-        good = {
-            s["key_id"]
-            for s in self.signatures
-            if verifier(s["key_id"], s["signature"], payload)
-        }
+        good: set[str] = set()
+        for sig in self.signatures:
+            try:
+                accepted = bool(verifier(sig["key_id"], sig["signature"], payload))
+            except Exception:
+                # A verifier that raises is a verifier that did not accept. The
+                # alternative — letting the exception escape — turns an
+                # unreachable KMS into a crashed rollout rather than a refused
+                # update, and a crashed rollout is the one that gets retried
+                # with the check switched off.
+                accepted = False
+            if accepted:
+                good.add(sig["key_id"])
         if len(good) < quorum:
             raise SignatureInvalid(
                 f"{self.name}: {len(good)} valid signature(s) from distinct keys, "

@@ -18,7 +18,14 @@ keywords = ["ota", "rollback", "sbom", "reproducible-builds", "edge", "fleet-man
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.6", "mypy>=1.10"]
+dev = [
+    "pytest>=7",
+    "pytest-cov>=4",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "bandit>=1.7",
+    "pip-audit>=2.7",
+]
 
 [project.scripts]
 fol = "fleet_ops.cli:main"
@@ -29,7 +36,17 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
-addopts = "-q"
+addopts = "-q --strict-markers"
+# Tiers, so a gate can select one. The names are the contract with the Makefile
+# and with CI; renaming one silently disables a job.
+markers = [
+    "smoke: does it start at all — seconds, no fleet, run first",
+    "unit: one behaviour of one module, at its boundary",
+    "functional: a requirement from docs/FUNCTIONAL_SPEC.md, end to end",
+    "security: input handling, path safety, and what must not be trusted",
+    "pentest: adversarial — attacks on the two rules, not exercises of them",
+    "hardware: requires a real board with two slots; skipped unless FOL_HARDWARE is set",
+]
 
 [tool.ruff]
 line-length = 100

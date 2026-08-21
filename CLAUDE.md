@@ -8,10 +8,12 @@ deployment tool.
 
 ```bash
 pip install -e ".[dev]"
-make test          # 67 tests, ~0.3s
+make test          # 134 tests across five tiers, ~1s
+make smoke         # 6 tests — run this first on a new machine
 make demo          # the deterministic rollout scenario
-make qa            # ruff, strict mypy, coverage gate
-python -m pytest tests/test_node.py -k rolls_itself_back   # single test
+make qa            # ruff, strict mypy, bandit, pip-audit, coverage >= 90%
+python -m pytest tests/unit/test_node.py -k rolls_itself_back   # single test
+python -m pytest -m pentest                                     # one tier
 ```
 
 `fol demo` must always print **2 rolled back** and **6 untouched**. If it does
@@ -32,6 +34,19 @@ not, something regressed — do not adjust the scenario to match the new output.
 | `rollout.py` | Waves, budgets, and the halt that has no override. |
 | `reproducible.py` | Two build trees compared, differing files named. |
 | `demo.py` | The pinned scenario, with four planted failures. |
+| `tests/smoke/` | Does it start at all. Subprocess-level. |
+| `tests/unit/` | One behaviour of one module, at its boundary. |
+| `tests/functional/` | One test per requirement in the functional spec. |
+| `tests/security/` | Untrusted input, path safety, checks that cannot run. |
+| `tests/pentest/` | Attacks on the two rules, including three that succeed. |
+| `docs/GETTING_STARTED.md` | Neophyte path: no terminal experience assumed. |
+| `docs/FUNCTIONAL_SPEC.md` | Actors, FR-1…FR-14, acceptance criteria. |
+| `docs/TECHNICAL_REFERENCE.md` | Module by module, every artefact field. |
+| `docs/ARCHITECTURE.md` | Why it is shaped this way; what was rejected. |
+| `docs/BARE_METAL.md` | U-Boot, MCUboot, watchdogs, the power-cut test. |
+| `docs/THREAT_MODEL.md` | Adversaries A1–A4, residual risks R-1…R-6. |
+| `docs/CONTROL_MAP.md` | Control → implementation → the test that proves it. |
+| `docs/TEST_STRATEGY.md` | The five tiers and what each is for. |
 | `docs/ORCHESTRATORS.md` | Mapping onto RAUC, Mender, MCUboot, k3s, balena. |
 | `docs/PORTING.md` | What the first bench port will find wrong. |
 
@@ -51,6 +66,24 @@ not, something regressed — do not adjust the scenario to match the new output.
 8. **No cryptography ships here.** → ADR 0003.
 9. **No runtime dependencies.**
 
+## The delivery standard
+
+Every deliverable in this repository ships with all of the following. This is the
+standing default, not a per-task decision — a change that adds behaviour without
+its documentation and its tiers is unfinished, not fast.
+
+1. **Technical documentation** — module by module, every artefact field.
+2. **Functional documentation** — actors, numbered requirements, acceptance
+   criteria, written so someone who never reads the source can check a claim.
+3. **A neophyte path** — a guide assuming no terminal, no Python, no git.
+4. **A bare-metal run** — how it works on real hardware with no container.
+5. **A full test harness** — smoke, unit, functional, security and pen-test
+   tiers, each selectable, each with a stated purpose.
+6. **A QA gate** — lint, strict types, SAST, dependency advisories, coverage.
+   Everything in it fails the build.
+7. **A threat model with residual risks**, each pinned by a test that
+   demonstrates the gap rather than hiding it.
+
 ## Conventions
 
 **Tests assert on node state, not on the log.** `node.running_version ==
@@ -58,6 +91,16 @@ not, something regressed — do not adjust the scenario to match the new output.
 
 **Write the negative test first.** Roughly three quarters of the suite asserts
 that an update was refused or reverted.
+
+**A pen-test that only passes is a pen-test written afterwards.** Where an attack
+succeeds, the test says so and names the residual risk. Three currently do.
+
+**The tier is the directory.** `tests/<tier>/` gets the marker automatically at
+collection. Do not add `pytestmark` by hand.
+
+**A signature test needs a verifier that binds the payload.** A verifier that
+ignores its `payload` argument makes every transplant test pass and prove
+nothing. `tests/pentest` writes one out for this reason.
 
 **Docstrings carry the argument, not the mechanics.**
 

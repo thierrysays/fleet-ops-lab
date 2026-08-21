@@ -117,6 +117,48 @@ a required quorum is a failure and never a skip.
 
 ---
 
+## Documentation
+
+| For | Read |
+|---|---|
+| Never used a terminal, want to see it work | [GETTING_STARTED.md](docs/GETTING_STARTED.md) — assumes nothing, twenty minutes, no hardware |
+| What it does and what counts as working | [FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) — actors, FR-1…FR-14, acceptance criteria |
+| Writing code against it | [TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) — module by module, every artefact field |
+| Why it is shaped this way | [ARCHITECTURE.md](docs/ARCHITECTURE.md) — the argument, and what was rejected |
+| A real board with two slots | [BARE_METAL.md](docs/BARE_METAL.md) — U-Boot, MCUboot, watchdogs, the power-cut test |
+| You already run RAUC, Mender or k3s | [ORCHESTRATORS.md](docs/ORCHESTRATORS.md) — the mapping, and what k3s does not give you |
+| What is defended and what is not | [THREAT_MODEL.md](docs/THREAT_MODEL.md) — adversaries A1–A4, residual risks R-1…R-6 |
+| Every control and the test that proves it | [CONTROL_MAP.md](docs/CONTROL_MAP.md) |
+| How the suite is organised | [TEST_STRATEGY.md](docs/TEST_STRATEGY.md) — five tiers and the gate |
+| What the first bench port will find wrong | [PORTING.md](docs/PORTING.md) |
+| Decisions and their cost | [docs/adr/](docs/adr/) |
+
+---
+
+## The test harness
+
+Five tiers, each answering a different question. The tier a test belongs to is
+the directory it lives in, and the marker is applied from the path — so a test
+cannot be moved between tiers and keep an old label.
+
+```
+make smoke        # does it start at all                      6 tests
+make unit         # each part at its boundary                57 tests
+make functional   # the specification, end to end            27 tests
+make security     # input and paths it did not create        22 tests
+make pentest      # attacks on the two rules                 22 tests
+make test         # all of it                               134 tests
+make qa           # ruff, mypy --strict, bandit, pip-audit, coverage >= 90%
+```
+
+The pen-test tier includes three tests that pass **by demonstrating a gap**: an
+older signed release replays successfully, a probe that passes then fails leaves
+a bad version committed, and a node that lies about its version is not
+detectable. Those are residual risks R-1 to R-3, and a pen-test suite in which
+the system always wins is a suite written after the fact.
+
+---
+
 ## What this is not
 
 - **Not a device management platform.** No enrolment, no inventory, no

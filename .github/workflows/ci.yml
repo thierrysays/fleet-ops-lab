@@ -6,20 +6,73 @@ on:
   pull_request:
 
 jobs:
-  test:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: make smoke
+
+  tiers:
+    needs: smoke
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.10", "3.12"]
+        python-version: ["3.10", "3.11", "3.12"]
+        tier: [unit, functional, security, pentest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e ".[dev]"
-      - run: ruff check src tests
-      - run: mypy
-      - run: python -m pytest --cov=fleet_ops --cov-report=term-missing --cov-fail-under=90
-      # The demo is a fixture with pinned counts; a change in its output is a
-      # regression until somebody says otherwise.
+      - run: make ${{ matrix.tier }}
+
+  qa:
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - name: Lint
+        run: make lint
+      - name: Types (strict)
+        run: make types
+      - name: SAST
+        run: make sast
+      - name: Dependency advisories
+        run: make audit
+      - name: Coverage gate
+        run: make cover
+
+  demo:
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
       - run: make demo
+      - name: The pinned counts must hold
+        run: |
+          python - <<'PY'
+          import json, sys
+          r = json.load(open("run/rollout.json"))
+          if (r["rolled_back"], r["untouched"], r["halted_at"]) != (2, 6, "pilot"):
+              print(f"::error::demo drifted: {r['rolled_back']} rolled back, "
+                    f"{r['untouched']} untouched, halted at {r['halted_at']!r}")
+              sys.exit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rollout-report
+          path: run/rollout.json
