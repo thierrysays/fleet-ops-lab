@@ -1,0 +1,107 @@
+{
+  "schema": "fleet-ops/rollout-report/v1",
+  "plan": {
+    "artefact": "inspection-agent",
+    "version": "2.4.0",
+    "waves": [
+      {
+        "name": "canary",
+        "node_ids": [
+          "node-01"
+        ],
+        "failure_budget": 0.0
+      },
+      {
+        "name": "pilot",
+        "node_ids": [
+          "node-02",
+          "node-03",
+          "node-04",
+          "node-05",
+          "node-06"
+        ],
+        "failure_budget": 0.2
+      },
+      {
+        "name": "fleet",
+        "node_ids": [
+          "node-07",
+          "node-08",
+          "node-09",
+          "node-10",
+          "node-11",
+          "node-12"
+        ],
+        "failure_budget": 0.1
+      }
+    ]
+  },
+  "updated": 2,
+  "failed": 4,
+  "rolled_back": 2,
+  "untouched": 6,
+  "halted_at": "pilot",
+  "halt_reason": "4/5 failed in wave 'pilot', budget was 20% (1 node(s))",
+  "by_code": {
+    "digest-mismatch": 1,
+    "health-probe-failed": 2,
+    "transport-failure": 1,
+    "updated": 2
+  },
+  "outcomes": [
+    {
+      "node_id": "node-01",
+      "ok": true,
+      "code": "updated",
+      "detail": "health probe passed",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": false
+    },
+    {
+      "node_id": "node-02",
+      "ok": true,
+      "code": "updated",
+      "detail": "health probe passed",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": false
+    },
+    {
+      "node_id": "node-03",
+      "ok": false,
+      "code": "transport-failure",
+      "detail": "node-03: link dropped during transfer of 'inspection-agent.bin'",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": false
+    },
+    {
+      "node_id": "node-04",
+      "ok": false,
+      "code": "digest-mismatch",
+      "detail": "inspection-agent: manifest says sha256:ceba2163dfaeb55b90045e8a2ae028d0667ebbd49d06bfeb74a0338db5c6a974, bytes hash to sha256:c1735458c34cd5b9444114319033968828e41768f406ca1e0b12c67c9e4dbd44",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": false
+    },
+    {
+      "node_id": "node-05",
+      "ok": false,
+      "code": "health-probe-failed",
+      "detail": "health probe failed",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": true
+    },
+    {
+      "node_id": "node-06",
+      "ok": false,
+      "code": "health-probe-failed",
+      "detail": "no health probe supplied",
+      "from_version": "2.3.0",
+      "to_version": "2.4.0",
+      "rolled_back": true
+    }
+  ]
+}

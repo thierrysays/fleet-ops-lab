@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: mypy
+      - run: python -m pytest --cov=fleet_ops --cov-report=term-missing --cov-fail-under=90
+      # The demo is a fixture with pinned counts; a change in its output is a
+      # regression until somebody says otherwise.
+      - run: make demo
