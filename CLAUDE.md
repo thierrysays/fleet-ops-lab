@@ -84,6 +84,21 @@ its documentation and its tiers is unfinished, not fast.
 7. **A threat model with residual risks**, each pinned by a test that
    demonstrates the gap rather than hiding it.
 
+## Repository metadata
+
+**Every repository carries `glossolalie-advisory` as a topic.** It is the common
+tag across the whole portfolio — the one that makes the family findable from a
+single search — and it sits alongside the repository's own descriptive topics
+rather than replacing them. A new repository is not finished until it has it.
+
+The rest of the topic list describes *this* repository: what it does, what it
+runs on, what standard it answers to. Aim for ten to twenty, lower-case and
+hyphenated, and prefer terms somebody would actually search for over terms that
+merely sound thorough.
+
+The description is one sentence saying what the thing refuses or measures, not
+what category it belongs to.
+
 ## Conventions
 
 **Tests assert on node state, not on the log.** `node.running_version ==
