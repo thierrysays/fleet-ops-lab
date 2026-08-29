@@ -1,4 +1,4 @@
-.PHONY: test smoke unit functional security pentest demo lint types sast audit cover qa clean
+.PHONY: test smoke unit functional security pentest demo lint types sast audit cover counts qa clean
 
 # ------------------------------------------------------------------ the tiers
 # Each answers a different question. See docs/TEST_STRATEGY.md.
@@ -34,7 +34,7 @@ demo:
 # warning and continues, because a warning nobody must act on is unread.
 
 lint:
-	python -m ruff check src tests
+	python -m ruff check src tests scripts
 
 types:
 	python -m mypy
@@ -45,10 +45,15 @@ sast:
 audit:
 	python -m pip_audit --progress-spinner off
 
+# A count written next to a command is stale the moment somebody adds a test.
+# This is the only part of the gate that reads the documentation.
+counts:
+	python scripts/check_documented_counts.py
+
 cover:
 	python -m pytest --cov=fleet_ops --cov-report=term-missing --cov-fail-under=90
 
-qa: lint types sast audit cover
+qa: lint types sast audit counts cover
 
 clean:
 	rm -rf run .pytest_cache .mypy_cache .ruff_cache .coverage htmlcov

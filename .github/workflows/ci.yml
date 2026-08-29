@@ -45,6 +45,8 @@ jobs:
         run: make lint
       - name: Types (strict)
         run: make types
+      - name: Documented counts
+        run: make counts
       - name: SAST
         run: make sast
       - name: Dependency advisories
