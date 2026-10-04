@@ -15,6 +15,12 @@ What it deliberately does not read matters as much as what it does:
   emits a string containing the character. A check reaching into literals would
   demand the code lie about its own output, and the decision to change what a
   program emits belongs in a commit of its own.
+* **A line a human has marked as quoted material.** Put
+  ``<!-- register: quoted -->`` on the line, or on the line before it, and the
+  check skips it. That exists for the title of an external document and for a
+  passage quoted verbatim: a gate that forces a misquote is worse than the
+  convention it enforces. It requires a person to assert the exemption, and it
+  shows up in the diff where a reviewer can disagree with it.
 
 So the rule enforced here is narrow and honest: prose that a human wrote as
 prose. Program output is a separate argument, and `git grep` finds it in a
@@ -35,6 +41,8 @@ ROOT = Path(__file__).resolve().parent.parent
 #: U+2014, written as an escape so this file does not trip its own check.
 EM_DASH = "—"
 FENCED = re.compile(r"```.*?```", re.DOTALL)
+#: A human's assertion that a line quotes something, and may not be rewritten.
+QUOTED = "<!-- register: quoted -->"
 INLINE_CODE = re.compile(r"`[^`\n]*`")
 #: Generated trees are not prose. A dot directory covers .git, .venv,
 #: .pytest_cache and every future cache without another edit here.
@@ -68,9 +76,14 @@ def markdown_prose(path: Path) -> list[tuple[int, str]]:
         lambda m: " " * len(m.group(0)),
         FENCED.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), text),
     )
+    lines = blanked.splitlines()
+    exempt = {
+        n for n, line in enumerate(lines, start=1) if QUOTED in line
+    }
+    exempt |= {n + 1 for n in exempt}          # the marker may sit on the line before
     return [
-        (n, line) for n, line in enumerate(blanked.splitlines(), start=1)
-        if EM_DASH in line
+        (n, line) for n, line in enumerate(lines, start=1)
+        if EM_DASH in line and n not in exempt
     ]
 
 
