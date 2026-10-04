@@ -47,6 +47,8 @@ jobs:
         run: make types
       - name: Documented counts
         run: make counts
+      - name: Prose register
+        run: make register
       - name: SAST
         run: make sast
       - name: Dependency advisories

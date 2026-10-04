@@ -1,4 +1,4 @@
-"""fleet-ops-lab — updating a fleet of constrained nodes without bricking it.
+"""fleet-ops-lab, updating a fleet of constrained nodes without bricking it.
 
 Nothing in this package is clever, and that is the point. Over-the-air update,
 rollback, a bill of materials, and a build that produces the same bytes twice
@@ -8,8 +8,8 @@ them urgent.
 
 The design rule throughout: **an update is provisional until the node says
 otherwise.** Activation is a promise to try, not a commitment. A node that
-activates a new slot and then fails to check in — because the image is bad,
-because the network died, because someone pulled the power — reverts to what it
+activates a new slot and then fails to check in (because the image is bad,
+because the network died, because someone pulled the power) reverts to what it
 was running before, without anybody being available to intervene. The default
 outcome of silence is rollback.
 

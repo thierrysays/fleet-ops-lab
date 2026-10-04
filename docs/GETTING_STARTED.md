@@ -17,24 +17,24 @@ If you already work in Python: `pip install -e ".[dev]" && make demo` and skip t
 
 ## Table of contents
 
-- [Part 0 — What you are about to run, and why](#part-0--what-you-are-about-to-run-and-why)
-- [Part 1 — Open a terminal](#part-1--open-a-terminal)
-- [Part 2 — Install Python](#part-2--install-python)
-- [Part 3 — Get the code](#part-3--get-the-code)
-- [Part 4 — Make a virtual environment](#part-4--make-a-virtual-environment)
-- [Part 5 — Install the project](#part-5--install-the-project)
-- [Part 6 — Run the tests](#part-6--run-the-tests)
-- [Part 7 — Run the demonstration](#part-7--run-the-demonstration)
+- [Part 0: What you are about to run, and why](#part-0--what-you-are-about-to-run-and-why)
+- [Part 1: Open a terminal](#part-1--open-a-terminal)
+- [Part 2: Install Python](#part-2--install-python)
+- [Part 3: Get the code](#part-3--get-the-code)
+- [Part 4: Make a virtual environment](#part-4--make-a-virtual-environment)
+- [Part 5: Install the project](#part-5--install-the-project)
+- [Part 6: Run the tests](#part-6--run-the-tests)
+- [Part 7: Run the demonstration](#part-7--run-the-demonstration)
 - [What the demonstration shows](#what-the-demonstration-shows)
-- [Part 8 — Watch a node rescue itself](#part-8--watch-a-node-rescue-itself)
-- [Part 9 — Try to break the rules](#part-9--try-to-break-the-rules)
-- [Part 10 — Diff two bills of materials](#part-10--diff-two-bills-of-materials)
-- [Part 11 — Check a build is reproducible](#part-11--check-a-build-is-reproducible)
+- [Part 8: Watch a node rescue itself](#part-8--watch-a-node-rescue-itself)
+- [Part 9: Try to break the rules](#part-9--try-to-break-the-rules)
+- [Part 10: Diff two bills of materials](#part-10--diff-two-bills-of-materials)
+- [Part 11: Check a build is reproducible](#part-11--check-a-build-is-reproducible)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
-## Part 0 — What you are about to run, and why
+## Part 0, What you are about to run, and why
 
 Imagine two hundred small computers in a factory, running software you wrote.
 You have a new version. How do you install it on all two hundred, and what
@@ -43,14 +43,14 @@ happens when the new version turns out to be broken?
 That second question is the whole subject. Software updates on servers are easy
 to undo, because there is always somebody who can log in. On a machine bolted
 inside a production line, on a site with no engineer, at three in the morning,
-there may be nobody — and if the broken update also broke the network, there is
+there may be nobody, and if the broken update also broke the network, there is
 no way in at all.
 
 This project models an update process built around that. Two rules:
 
 1. **An update is provisional until the machine says it worked.** It installs,
-   it boots, and it must check in within a few minutes. If it does not — because
-   it crashed, because the network died, because somebody pulled the plug — it
+   it boots, and it must check in within a few minutes. If it does not (because
+   it crashed, because the network died, because somebody pulled the plug) it
    puts the old version back **by itself**, with nobody watching.
 
 2. **The fleet stops itself.** Updates go out to a few machines first. If too
@@ -66,22 +66,22 @@ and watch both rules fire.
 
 ---
 
-## Part 1 — Open a terminal
+## Part 1, Open a terminal
 
 A terminal is a window where you type commands instead of clicking.
 
-**Windows** — press the Windows key, type `powershell`, press Enter.
+**Windows**: press the Windows key, type `powershell`, press Enter.
 
-**macOS** — press ⌘ + Space, type `terminal`, press Enter.
+**macOS**: press ⌘ + Space, type `terminal`, press Enter.
 
-**Linux** — press Ctrl + Alt + T, or find "Terminal" in your applications.
+**Linux**: press Ctrl + Alt + T, or find "Terminal" in your applications.
 
 You will see a prompt: some text ending in `>` or `$` or `%`. Commands go after
 it. Type them exactly, then press Enter.
 
 ---
 
-## Part 2 — Install Python
+## Part 2, Install Python
 
 ```bash
 python3 --version
@@ -91,17 +91,17 @@ If you see `Python 3.10` or higher, skip to Part 3.
 
 **If not:**
 
-- **Windows** — [python.org/downloads](https://www.python.org/downloads/). Tick
+- **Windows**: [python.org/downloads](https://www.python.org/downloads/). Tick
   **"Add Python to PATH"** during installation; if you miss it the terminal will
   not find Python afterwards. Close and reopen PowerShell when done.
-- **macOS** — the same site, or `brew install python@3.12`.
-- **Linux (Debian/Ubuntu)** — `sudo apt update && sudo apt install -y python3 python3-venv python3-pip`.
+- **macOS**: the same site, or `brew install python@3.12`.
+- **Linux (Debian/Ubuntu)**: `sudo apt update && sudo apt install -y python3 python3-venv python3-pip`.
 
 On Windows the command is often `python` rather than `python3`.
 
 ---
 
-## Part 3 — Get the code
+## Part 3, Get the code
 
 ```bash
 git --version
@@ -117,7 +117,7 @@ cd fleet-ops-lab
 
 ---
 
-## Part 4 — Make a virtual environment
+## Part 4, Make a virtual environment
 
 A private copy of Python for this project, so nothing you install can affect
 anything else on your machine.
@@ -147,7 +147,7 @@ almost always this.
 
 ---
 
-## Part 5 — Install the project
+## Part 5, Install the project
 
 ```bash
 pip install -e ".[dev]"
@@ -158,7 +158,7 @@ You should see `fleet-ops-lab 0.1.0`. `fol` is the command this project installs
 
 ---
 
-## Part 6 — Run the tests
+## Part 6, Run the tests
 
 ```bash
 make test
@@ -173,13 +173,13 @@ Then try one tier:
 make pentest
 ```
 
-Those are the adversarial tests — deliberate attempts to break the two rules.
+Those are the adversarial tests, deliberate attempts to break the two rules.
 Three of them pass by *demonstrating a gap* rather than by winning; they are
 named as limitations, and [THREAT_MODEL.md](THREAT_MODEL.md) lists each one.
 
 ---
 
-## Part 7 — Run the demonstration
+## Part 7, Run the demonstration
 
 ```bash
 make demo
@@ -209,33 +209,33 @@ make demo
 Twelve machines, in three groups: one **canary**, then a **pilot** of five, then
 the remaining six. Four faults were planted in the pilot group.
 
-**`node-03 transport-failure`** — the network dropped. The update never arrived,
+**`node-03 transport-failure`**: the network dropped. The update never arrived,
 so nothing happened. This is not an incident: the machine is still running the
 version that works.
 
-**`node-04 digest-mismatch`** — this is the interesting one. The download
-*succeeded*. It just delivered the wrong bytes — half the file, in this case.
+**`node-04 digest-mismatch`**: this is the interesting one. The download
+*succeeded*. It just delivered the wrong bytes, half the file, in this case.
 A check that asks "did the download work?" says yes. This project checks the
 fingerprint of what actually landed on the machine, so it says no.
 
-**`node-05 health-probe-failed`** — it installed, it booted, and it failed its
+**`node-05 health-probe-failed`**: it installed, it booted, and it failed its
 health check. It put the old version back.
 
-**`node-06 health-probe-failed — no health probe supplied`** — nobody configured
+**`node-06 health-probe-failed — no health probe supplied`**: nobody configured
 a health check for this machine. It was rolled back anyway. A machine you cannot
 ask "are you working?" does not get to keep a change on the strength of silence.
 
-**`halted : in wave 'pilot'`** — four failures out of five, against a budget that
+**`halted : in wave 'pilot'`**: four failures out of five, against a budget that
 allowed one. The rollout stopped.
 
-**`untouched : 6`** — the last group never got the update at all. They are still
+**`untouched : 6`**: the last group never got the update at all. They are still
 running the old version, which is the version that works. **That is the rollout
 succeeding**, not failing. If it had carried on, twelve machines would be broken
-instead of four, and none of the four are actually broken — they all recovered.
+instead of four, and none of the four are actually broken, they all recovered.
 
 ---
 
-## Part 8 — Watch a node rescue itself
+## Part 8, Watch a node rescue itself
 
 The rollback in the demo happened because a health check failed. The more
 important case is when nobody is there at all.
@@ -257,7 +257,7 @@ print("running:", node.running_version)
 # A new version is installed and booted.
 slot = node.stage("2.0.0", "sha256:new"); node.mark_verified(slot)
 node.activate()
-print("running:", node.running_version, "— but not confirmed yet")
+print("running:", node.running_version, "(not confirmed yet)")
 
 # Now nothing happens. Nobody logs in. The network is down. Five minutes pass.
 clock.advance(301.0)
@@ -273,7 +273,7 @@ python alone.py
 
 ```
 running: 1.0.0
-running: 2.0.0 — but not confirmed yet
+running: 2.0.0 (not confirmed yet)
 rolled back by itself: True
 running: 1.0.0
 ```
@@ -284,7 +284,7 @@ silence as a failure rather than as consent.
 
 ---
 
-## Part 9 — Try to break the rules
+## Part 9, Try to break the rules
 
 **Attempt one: force the rollout to continue past a halt.**
 
@@ -299,7 +299,7 @@ python -c "import inspect, fleet_ops.rollout as r; print(inspect.signature(r.Rol
 ```
 
 There is no `force`, no `continue_on_failure`, no `ignore_budget`. That absence is
-deliberate — such a flag would be used at three in the morning by whoever wants
+deliberate, such a flag would be used at three in the morning by whoever wants
 the deployment finished, which is precisely when continuing is worst. Restarting
 a halted rollout means writing a new plan, which somebody can read first.
 
@@ -339,9 +339,9 @@ a deadline. An image nobody can enumerate cannot answer it.
 
 ---
 
-## Part 10 — Diff two bills of materials
+## Part 10, Diff two bills of materials
 
-A bill of materials — an **SBOM** — is a list of everything inside a release that
+A bill of materials, an **SBOM**: is a list of everything inside a release that
 somebody else wrote. Producing one is a compliance exercise. Comparing two is an
 engineering one.
 
@@ -358,7 +358,7 @@ fol sbom-diff examples/sbom-2.3.0.json examples/sbom-2.4.0.json
 ```
 
 The first line is the one to look at. A component appeared that was not there
-before, and its licence is BUSL-1.1 — a source-available licence with commercial
+before, and its licence is BUSL-1.1, a source-available licence with commercial
 restrictions, in a product being shipped to customers. Nobody chose that; it
 arrived as somebody else's dependency.
 
@@ -371,7 +371,7 @@ echo $?        # 1 if anything changed, 0 if nothing did
 
 ---
 
-## Part 11 — Check a build is reproducible
+## Part 11, Check a build is reproducible
 
 "Reproducible" means building the same source twice gives byte-identical output.
 When it does not, "is the version in the field the version in the repository?"
@@ -392,7 +392,7 @@ fol repro /tmp/build-a /tmp/build-b
 ```
 
 It names the file. That is the entire value: `bin/agent` is identical, and the
-only difference is an embedded build timestamp — which is a morning's work to
+only difference is an embedded build timestamp, which is a morning's work to
 fix, and invisible if the tool had only said "not reproducible".
 
 ---
@@ -419,7 +419,7 @@ You are installing outside a virtual environment. Do Part 4 first. Do not use
 
 **The demo prints different numbers**
 The scenario is pinned at 2 rolled back and 6 untouched, and a test enforces it.
-Different numbers mean the version has moved on, or something regressed — either
+Different numbers mean the version has moved on, or something regressed, either
 way it is worth reporting.
 
 **Where do I go next?**

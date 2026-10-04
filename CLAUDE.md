@@ -1,4 +1,4 @@
-# fleet-ops-lab — project instructions
+# fleet-ops-lab, project instructions
 
 A working model of updating a fleet of constrained nodes without bricking it.
 The product of this repository is **an update that reverts itself**, not a
@@ -9,7 +9,7 @@ deployment tool.
 ```bash
 pip install -e ".[dev]"
 make test          # 134 tests across five tiers, ~1s
-make smoke         # 6 tests — run this first on a new machine
+make smoke         # 6 tests: run this first on a new machine
 make demo          # the deterministic rollout scenario
 make qa            # ruff, strict mypy, bandit, pip-audit, coverage >= 90%
 python -m pytest tests/unit/test_node.py -k rolls_itself_back   # single test
@@ -17,7 +17,7 @@ python -m pytest -m pentest                                     # one tier
 ```
 
 `fol demo` must always print **2 rolled back** and **6 untouched**. If it does
-not, something regressed — do not adjust the scenario to match the new output.
+not, something regressed, do not adjust the scenario to match the new output.
 
 ## Where things are
 
@@ -50,7 +50,7 @@ not, something regressed — do not adjust the scenario to match the new output.
 | `docs/ORCHESTRATORS.md` | Mapping onto RAUC, Mender, MCUboot, k3s, balena. |
 | `docs/PORTING.md` | What the first bench port will find wrong. |
 
-## Invariants — do not break these without an ADR
+## Invariants, do not break these without an ADR
 
 1. **Silence is a rollback.** `PENDING` reverts on deadline, by the node's own
    timer, consulting nothing. There is no path where doing nothing commits.
@@ -60,7 +60,7 @@ not, something regressed — do not adjust the scenario to match the new output.
 4. **Signature before digest.** A digest checked against an unauthenticated
    manifest answers the wrong question.
 5. **Staging never touches the running slot**, and is refused while another slot
-   is pending — that slot is the rollback target.
+   is pending, that slot is the rollback target.
 6. **The halt has no override.** Resuming means running a new plan.
 7. **A canary's budget is zero.** One canary failure is the canary working.
 8. **No cryptography ships here.** → ADR 0003.
@@ -69,17 +69,17 @@ not, something regressed — do not adjust the scenario to match the new output.
 ## The delivery standard
 
 Every deliverable in this repository ships with all of the following. This is the
-standing default, not a per-task decision — a change that adds behaviour without
+standing default, not a per-task decision, a change that adds behaviour without
 its documentation and its tiers is unfinished, not fast.
 
-1. **Technical documentation** — module by module, every artefact field.
-2. **Functional documentation** — actors, numbered requirements, acceptance
+1. **Technical documentation**: module by module, every artefact field.
+2. **Functional documentation**: actors, numbered requirements, acceptance
    criteria, written so someone who never reads the source can check a claim.
-3. **A neophyte path** — a guide assuming no terminal, no Python, no git.
-4. **A bare-metal run** — how it works on real hardware with no container.
-5. **A full test harness** — smoke, unit, functional, security and pen-test
+3. **A neophyte path**: a guide assuming no terminal, no Python, no git.
+4. **A bare-metal run**: how it works on real hardware with no container.
+5. **A full test harness**: smoke, unit, functional, security and pen-test
    tiers, each selectable, each with a stated purpose.
-6. **A QA gate** — lint, strict types, SAST, dependency advisories, coverage.
+6. **A QA gate**: lint, strict types, SAST, dependency advisories, coverage.
    Everything in it fails the build.
 7. **A threat model with residual risks**, each pinned by a test that
    demonstrates the gap rather than hiding it.
@@ -87,8 +87,8 @@ its documentation and its tiers is unfinished, not fast.
 ## Repository metadata
 
 **Every repository carries `glossolalie-advisory` as a topic.** It is the common
-tag across the whole portfolio — the one that makes the family findable from a
-single search — and it sits alongside the repository's own descriptive topics
+tag across the whole portfolio (the one that makes the family findable from a
+single search) and it sits alongside the repository's own descriptive topics
 rather than replacing them. A new repository is not finished until it has it.
 
 The rest of the topic list describes *this* repository: what it does, what it
@@ -130,7 +130,7 @@ nothing. `tests/pentest` writes one out for this reason.
   same name are different components. Collapsing them hides a model swap inside
   a dependency bump.
 - `Wave.tolerated()` truncates: 10% of ten nodes is one, and 10% of five is
-  zero. That is deliberate — a small wave tolerates nothing.
+  zero. That is deliberate, a small wave tolerates nothing.
 - Nothing here has run against hardware. Every node is a Python object.
 
 ## The next milestone
@@ -140,5 +140,5 @@ nothing. `tests/pentest` writes one out for this reason.
    Start at `docs/PORTING.md`.
 2. A resumable transport: the current interface has no vocabulary for a partial
    transfer, and a 400 MB image over cellular needs one.
-3. Coordinated groups — nodes that must update together because they share a
+3. Coordinated groups: nodes that must update together because they share a
    protocol version.

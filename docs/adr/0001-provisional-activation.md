@@ -1,11 +1,11 @@
-# ADR 0001 — Activation is provisional, and silence reverts
+# ADR 0001, Activation is provisional, and silence reverts
 
 **Status:** accepted · 2026-08-21
 
 ## Context
 
-The straightforward update sequence — write the new image, switch the boot slot,
-reboot — is correct whenever the new image works. When it does not, recovery
+The straightforward update sequence, write the new image, switch the boot slot,
+reboot, is correct whenever the new image works. When it does not, recovery
 requires the node to be reachable, which is the one thing a bad image most
 reliably prevents. On a site with no engineer, that is a lorry journey.
 
@@ -24,8 +24,8 @@ node that is healthy but slow to confirm gets rolled back unnecessarily. The
 window is a tunable with no universally right value, and setting it too short is
 a self-inflicted outage.
 
-Accepted, because the alternative failure — a fleet that installs a bad image
-and cannot recover — is not recoverable at all, and this one is a redeploy.
+Accepted, because the alternative failure (a fleet that installs a bad image
+and cannot recover) is not recoverable at all, and this one is a redeploy.
 
 ## Consequence
 

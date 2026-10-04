@@ -42,7 +42,7 @@ window that has never been tested.
 ### `sbom.py`
 
 `Component(name, version, kind, licence, digest, supplier)` with a derived
-`key` of `kind:name` — a library and a model of the same name are different
+`key` of `kind:name`, a library and a model of the same name are different
 components, and collapsing them hides a model swap inside a dependency bump.
 
 `SBOM.of(artefact, version, components, **metadata)` sorts at construction. An
@@ -63,17 +63,17 @@ worse than a small honest one.
 
 ### `artefact.py`
 
-`Artefact(name, version, payload)` — opaque bytes, with derived `digest` and
+`Artefact(name, version, payload)`, opaque bytes, with derived `digest` and
 `size`.
 
-`Manifest.describing(artefact, sbom, build_inputs_digest="", **metadata)` — the
+`Manifest.describing(artefact, sbom, build_inputs_digest="", **metadata)`, the
 signed description. Raises `SbomMissing` if the SBOM is `None`.
 
 | Method | Does | Refuses |
 |---|---|---|
-| `to_be_signed()` | the structure a signature covers — everything but the signatures | — |
-| `digest` | `sha256:…` over `to_be_signed()` | — |
-| `signed_by(key_id, signature)` | returns a new manifest with one more signature | — |
+| `to_be_signed()` | the structure a signature covers, everything but the signatures |, |
+| `digest` | `sha256:…` over `to_be_signed()` |, |
+| `signed_by(key_id, signature)` | returns a new manifest with one more signature |, |
 | `verify_artefact(artefact)` | binds manifest to bytes | digest or size mismatch |
 | `verify_signature(verifier, quorum)` | counts valid signatures from **distinct** keys | absent verifier with quorum ≥ 1; too few distinct keys; a verifier that raises counts as a refusal |
 
@@ -97,8 +97,8 @@ non-reproducible build.
 | `activate()` | sets `PENDING`, starts the deadline | nothing verified to activate |
 | `confirm()` | commits; clears the deadline | nothing pending |
 | `rollback(reason)` | marks the pending slot `FAILED`, restores the other | returns `None` if nothing pending |
-| `tick()` | reverts if the deadline passed; returns whether it did | — |
-| `state()` | node id, running version, slot states, `awaiting_confirmation` | — |
+| `tick()` | reverts if the deadline passed; returns whether it did |, |
+| `state()` | node id, running version, slot states, `awaiting_confirmation` |, |
 
 `history` records every transition with its reason, in order.
 
@@ -115,11 +115,11 @@ class Transport(Protocol):
     def delete(self, node_id: str, name: str) -> None: ...
 ```
 
-`InMemoryTransport` — the reference implementation.
-`LocalDirTransport(root)` — a directory per node; refuses `/` and `..` in either
+`InMemoryTransport` (the reference implementation.
+`LocalDirTransport(root)`) a directory per node; refuses `/` and `..` in either
 component; writes to `*.partial` and renames, so a process killed mid-write
 leaves the previous blob intact.
-`FlakyTransport(inner, fail_every, truncate_every, fail_nodes, truncate_nodes)` —
+`FlakyTransport(inner, fail_every, truncate_every, fail_nodes, truncate_nodes)`,
 drops *and* truncates, because a digest check tested only against total failure
 has not been tested.
 
@@ -139,14 +139,14 @@ The order is load-bearing:
 3. **verify the digest** of what was read back, against the now-authentic manifest
 4. stage into the spare slot
 5. activate provisionally
-6. probe — pass confirms, fail or absent or raising rolls back
+6. probe: pass confirms, fail or absent or raising rolls back
 
 `UpdateOutcome` carries `node_id`, `ok`, `code`, `detail`, `from_version`,
 `to_version`, `rolled_back`. Ordinary failures never raise.
 
 ### `rollout.py`
 
-`Wave(name, node_ids, failure_budget)` with `tolerated()` = `int(len × budget)` —
+`Wave(name, node_ids, failure_budget)` with `tolerated()` = `int(len × budget)`,
 truncating, so a five-node wave at 10 % tolerates nothing.
 
 `RolloutPlan(artefact_name, version, waves)`, plus

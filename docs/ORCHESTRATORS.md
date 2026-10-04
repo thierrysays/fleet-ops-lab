@@ -1,8 +1,8 @@
 # Mapping onto the tools people actually run
 
 This package is a model of an update process, not a replacement for the systems
-that implement one. The mapping matters because the model's two rules — silence
-is a rollback, and the fleet halts itself — are supported to very different
+that implement one. The mapping matters because the model's two rules (silence
+is a rollback, and the fleet halts itself) are supported to very different
 degrees by the obvious tools.
 
 ## RAUC / SWUpdate / Mender (Linux SBCs with A/B rootfs)
@@ -29,7 +29,7 @@ usually a script.
 ## Microcontrollers with two flash banks (MCUboot, Zephyr)
 
 Also a close fit, with the confirmation window enforced in the bootloader rather
-than by a supervisor process — which is stronger, because a hung application
+than by a supervisor process, which is stronger, because a hung application
 cannot confirm.
 
 `SlotState.PENDING` is MCUboot's *test* image; `confirm()` is

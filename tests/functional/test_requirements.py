@@ -33,7 +33,7 @@ def _cli(tmp_path, cli_env, *args: str) -> subprocess.CompletedProcess[str]:
 
 # ------------------------------------------------------------------ FR-1
 def test_fr1_an_update_is_provisional_until_the_node_confirms():
-    """FR-1 — activation starts a confirmation window; it does not commit."""
+    """FR-1, activation starts a confirmation window; it does not commit."""
     clock = ManualClock()
     node = running_node(clock=clock)
     artefact, manifest = release()
@@ -47,7 +47,7 @@ def test_fr1_an_update_is_provisional_until_the_node_confirms():
 
 # ------------------------------------------------------------------ FR-2
 def test_fr2_a_node_that_never_confirms_reverts_on_its_own_timer():
-    """FR-2 — silence is a rollback, driven by the node, consulting nothing."""
+    """FR-2, silence is a rollback, driven by the node, consulting nothing."""
     clock = ManualClock()
     node = running_node(clock=clock, window=300.0)
     slot = node.stage("2.0.0", "sha256:new")
@@ -63,7 +63,7 @@ def test_fr2_a_node_that_never_confirms_reverts_on_its_own_timer():
 
 # ------------------------------------------------------------------ FR-3
 def test_fr3_bytes_that_do_not_match_the_manifest_never_reach_a_slot():
-    """FR-3 — the digest is checked on the node, after transfer."""
+    """FR-3, the digest is checked on the node, after transfer."""
     node = running_node()
     artefact, manifest = release()
     transport = FlakyTransport(InMemoryTransport(), truncate_nodes=frozenset({"n1"}))
@@ -75,7 +75,7 @@ def test_fr3_bytes_that_do_not_match_the_manifest_never_reach_a_slot():
 
 # ------------------------------------------------------------------ FR-4
 def test_fr4_a_missing_health_probe_is_a_failed_probe():
-    """FR-4 — an update nobody can confirm is rolled back, not kept."""
+    """FR-4, an update nobody can confirm is rolled back, not kept."""
     node = running_node()
     artefact, manifest = release()
     outcome = update_node(node, artefact, manifest, InMemoryTransport(), probe=None)
@@ -86,7 +86,7 @@ def test_fr4_a_missing_health_probe_is_a_failed_probe():
 
 # ------------------------------------------------------------------ FR-5
 def test_fr5_a_required_signature_with_no_verifier_is_a_failure():
-    """FR-5 — a check that cannot run is a check that failed."""
+    """FR-5, a check that cannot run is a check that failed."""
     node = running_node()
     artefact, manifest = release()
     signed = manifest.signed_by("k1", "whatever")
@@ -98,7 +98,7 @@ def test_fr5_a_required_signature_with_no_verifier_is_a_failure():
 
 # ------------------------------------------------------------------ FR-6
 def test_fr6_an_artefact_without_a_bill_of_materials_cannot_be_described():
-    """FR-6 — no SBOM, no manifest, therefore no deployment."""
+    """FR-6, no SBOM, no manifest, therefore no deployment."""
     artefact = Artefact("agent", "2.0.0", b"payload")
     with pytest.raises(SbomMissing):
         Manifest.describing(artefact, None)
@@ -106,7 +106,7 @@ def test_fr6_an_artefact_without_a_bill_of_materials_cannot_be_described():
 
 # ------------------------------------------------------------------ FR-7
 def test_fr7_a_wave_beyond_its_budget_halts_the_rollout(fleet):
-    """FR-7 — the fleet stops itself, and the rest stay on the old version."""
+    """FR-7, the fleet stops itself, and the rest stay on the old version."""
     nodes = fleet(20)
     artefact, manifest = release()
     plan = RolloutPlan.canary_then_rest("agent", "2.0.0", list(nodes), canary=1)
@@ -128,7 +128,7 @@ def test_fr7_there_is_no_parameter_that_continues_past_a_halt():
 
 # ------------------------------------------------------------------ FR-8
 def test_fr8_staging_is_refused_while_a_slot_is_pending():
-    """FR-8 — the rollback target is never overwritten."""
+    """FR-8, the rollback target is never overwritten."""
     from fleet_ops.errors import SlotUnavailable
 
     node = running_node()
@@ -141,7 +141,7 @@ def test_fr8_staging_is_refused_while_a_slot_is_pending():
 
 # ------------------------------------------------------------------ FR-9
 def test_fr9_the_report_groups_outcomes_by_cause(fleet):
-    """FR-9 — every stopping point has a stable code a dashboard can group by."""
+    """FR-9, every stopping point has a stable code a dashboard can group by."""
     nodes = fleet(6)
     artefact, manifest = release()
     transport = FlakyTransport(InMemoryTransport(),
@@ -158,7 +158,7 @@ def test_fr9_the_report_groups_outcomes_by_cause(fleet):
 
 # ------------------------------------------------------------------ FR-10
 def test_fr10_an_sbom_diff_names_what_appeared():
-    """FR-10 — the diff is the useful part, not the document."""
+    """FR-10, the diff is the useful part, not the document."""
     before = SBOM.of("agent", "1.0", [Component("zlib", "1.3.1", licence="Zlib")])
     after = SBOM.of("agent", "2.0", [
         Component("zlib", "1.3.1", licence="Zlib"),
@@ -177,7 +177,7 @@ def test_fr10_a_relicensed_dependency_is_surfaced_separately():
 
 # ------------------------------------------------------------------ FR-11
 def test_fr11_the_sbom_diff_can_gate_a_pipeline(tmp_path, cli_env):
-    """FR-11 — a CI gate needs an exit code, not a paragraph."""
+    """FR-11, a CI gate needs an exit code, not a paragraph."""
     a, b = tmp_path / "a.json", tmp_path / "b.json"
     a.write_text(json.dumps(SBOM.of("agent", "1.0", [Component("zlib", "1.3.1")]).as_dict()))
     b.write_text(json.dumps(SBOM.of("agent", "2.0", [Component("zlib", "1.3.2")]).as_dict()))
@@ -187,7 +187,7 @@ def test_fr11_the_sbom_diff_can_gate_a_pipeline(tmp_path, cli_env):
 
 # ------------------------------------------------------------------ FR-12
 def test_fr12_a_non_reproducible_build_names_the_files_that_differ(tmp_path, cli_env):
-    """FR-12 — "not reproducible" is useless; the paths are the deliverable."""
+    """FR-12, "not reproducible" is useless; the paths are the deliverable."""
     for name, stamp in (("a", "one"), ("b", "two")):
         d = tmp_path / name
         (d / "bin").mkdir(parents=True)
@@ -201,7 +201,7 @@ def test_fr12_a_non_reproducible_build_names_the_files_that_differ(tmp_path, cli
 
 # ------------------------------------------------------------------ FR-13
 def test_fr13_the_demo_scenario_holds_its_pinned_counts(tmp_path, cli_env):
-    """FR-13 — the demo is a fixture. Its numbers are part of the contract."""
+    """FR-13, the demo is a fixture. Its numbers are part of the contract."""
     out = tmp_path / "rollout.json"
     result = _cli(tmp_path, cli_env, "demo", "--out", str(out))
     assert result.returncode == 0
@@ -213,7 +213,7 @@ def test_fr13_the_demo_scenario_holds_its_pinned_counts(tmp_path, cli_env):
 
 # ------------------------------------------------------------------ FR-14
 def test_fr14_a_node_records_every_transition_it_made():
-    """FR-14 — the incident report writes itself."""
+    """FR-14, the incident report writes itself."""
     node = running_node()
     slot = node.stage("2.0.0", "sha256:new")
     node.mark_verified(slot)

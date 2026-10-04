@@ -42,8 +42,8 @@ failing.
 ## The two rules
 
 **An update is provisional until the node says otherwise.** Activation starts a
-confirmation window. A node that boots a new image and does not check in — bad
-image, dead network, someone pulled the power — reverts to the slot it was
+confirmation window. A node that boots a new image and does not check in (bad
+image, dead network, someone pulled the power) reverts to the slot it was
 running before, on its own timer, with nobody available to intervene. The state
 that survives a power cut is `PENDING`, and `PENDING` reverts. Silence is a
 rollback, never a success.
@@ -61,18 +61,18 @@ Everything else follows from those two.
 
 | Concern | What is here | The failure it is aimed at |
 |---|---|---|
-| **A/B slots** | `node.py` — stage into the spare, activate provisionally, confirm or revert | An update that overwrites the only working copy |
-| **Digest binding** | `artefact.py` — the manifest carries the artefact's digest, checked on the node after transfer | A transfer that *succeeds* and delivers the wrong bytes |
-| **Signature quorum** | `Manifest.verify_signature` with a caller-supplied verifier | An unsigned image, and — the subtler one — a check that was skipped because no verifier was configured |
-| **Health probes** | `update.py` — pass confirms, fail rolls back, **absent rolls back** | A node nobody can ask about keeping a change on the strength of silence |
-| **Waves and budgets** | `rollout.py` — canary at zero budget, then widening waves | A fleet-wide outage from one bad build |
-| **SBOM diff** | `sbom.py` — added, removed, version-changed, and licence changes called out | "What is in this image" asked on a deadline, sixty days too late |
-| **Reproducible builds** | `reproducible.py` — hash both trees, name every file that differs | An argument about what is actually deployed, at the start of every incident |
+| **A/B slots** | `node.py`, stage into the spare, activate provisionally, confirm or revert | An update that overwrites the only working copy |
+| **Digest binding** | `artefact.py`, the manifest carries the artefact's digest, checked on the node after transfer | A transfer that *succeeds* and delivers the wrong bytes |
+| **Signature quorum** | `Manifest.verify_signature` with a caller-supplied verifier | An unsigned image, and (the subtler one) a check that was skipped because no verifier was configured |
+| **Health probes** | `update.py`, pass confirms, fail rolls back, **absent rolls back** | A node nobody can ask about keeping a change on the strength of silence |
+| **Waves and budgets** | `rollout.py`, canary at zero budget, then widening waves | A fleet-wide outage from one bad build |
+| **SBOM diff** | `sbom.py`, added, removed, version-changed, and licence changes called out | "What is in this image" asked on a deadline, sixty days too late |
+| **Reproducible builds** | `reproducible.py`, hash both trees, name every file that differs | An argument about what is actually deployed, at the start of every incident |
 
 None of it knows what a node is. A node has slots, a digest, a health probe and
 a transport. Whether that is a Linux SBC with two rootfs partitions, an MCU with
 two flash banks, or a workload on a k3s cluster at the edge belongs to the
-deployment — see [docs/ORCHESTRATORS.md](docs/ORCHESTRATORS.md) for how the
+deployment, see [docs/ORCHESTRATORS.md](docs/ORCHESTRATORS.md) for how the
 model maps onto RAUC, Mender, SWUpdate, balena and k3s.
 
 ---
@@ -110,8 +110,8 @@ report = Rollout(nodes, transport, probes, verifier, signature_quorum=2).run(
 )
 ```
 
-No cryptography ships here. Whoever runs a fleet already has a key story — a
-TPM, a cloud KMS, an HSM, an Ed25519 key in a file — and this package will not
+No cryptography ships here. Whoever runs a fleet already has a key story (a
+TPM, a cloud KMS, an HSM, an Ed25519 key in a file) and this package will not
 choose one on their behalf. What it insists on is that an *absent* verifier with
 a required quorum is a failure and never a skip.
 
@@ -121,15 +121,15 @@ a required quorum is a failure and never a skip.
 
 | For | Read |
 |---|---|
-| Never used a terminal, want to see it work | [GETTING_STARTED.md](docs/GETTING_STARTED.md) — assumes nothing, twenty minutes, no hardware |
-| What it does and what counts as working | [FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) — actors, FR-1…FR-14, acceptance criteria |
-| Writing code against it | [TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) — module by module, every artefact field |
-| Why it is shaped this way | [ARCHITECTURE.md](docs/ARCHITECTURE.md) — the argument, and what was rejected |
-| A real board with two slots | [BARE_METAL.md](docs/BARE_METAL.md) — U-Boot, MCUboot, watchdogs, the power-cut test |
-| You already run RAUC, Mender or k3s | [ORCHESTRATORS.md](docs/ORCHESTRATORS.md) — the mapping, and what k3s does not give you |
-| What is defended and what is not | [THREAT_MODEL.md](docs/THREAT_MODEL.md) — adversaries A1–A4, residual risks R-1…R-6 |
+| Never used a terminal, want to see it work | [GETTING_STARTED.md](docs/GETTING_STARTED.md), assumes nothing, twenty minutes, no hardware |
+| What it does and what counts as working | [FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md), actors, FR-1…FR-14, acceptance criteria |
+| Writing code against it | [TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md), module by module, every artefact field |
+| Why it is shaped this way | [ARCHITECTURE.md](docs/ARCHITECTURE.md), the argument, and what was rejected |
+| A real board with two slots | [BARE_METAL.md](docs/BARE_METAL.md), U-Boot, MCUboot, watchdogs, the power-cut test |
+| You already run RAUC, Mender or k3s | [ORCHESTRATORS.md](docs/ORCHESTRATORS.md), the mapping, and what k3s does not give you |
+| What is defended and what is not | [THREAT_MODEL.md](docs/THREAT_MODEL.md), adversaries A1–A4, residual risks R-1…R-6 |
 | Every control and the test that proves it | [CONTROL_MAP.md](docs/CONTROL_MAP.md) |
-| How the suite is organised | [TEST_STRATEGY.md](docs/TEST_STRATEGY.md) — five tiers and the gate |
+| How the suite is organised | [TEST_STRATEGY.md](docs/TEST_STRATEGY.md), five tiers and the gate |
 | What the first bench port will find wrong | [PORTING.md](docs/PORTING.md) |
 | Decisions and their cost | [docs/adr/](docs/adr/) |
 
@@ -138,7 +138,7 @@ a required quorum is a failure and never a skip.
 ## The test harness
 
 Five tiers, each answering a different question. The tier a test belongs to is
-the directory it lives in, and the marker is applied from the path — so a test
+the directory it lives in, and the marker is applied from the path, so a test
 cannot be moved between tiers and keep an old label.
 
 ```
@@ -169,7 +169,7 @@ the system always wins is a suite written after the fact.
 - **Not a signing service.** See above.
 - **Not tested against hardware.** Every node here is a Python object. The model
   is the deliverable at this stage, and the first bench port will find something
-  wrong with it — `docs/PORTING.md` records what to expect.
+  wrong with it, `docs/PORTING.md` records what to expect.
 
 ## Licence
 

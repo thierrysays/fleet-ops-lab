@@ -4,8 +4,8 @@ Producing an SBOM is a compliance exercise. Diffing two of them is an
 engineering one: what changed between the version running in the field and the
 version about to replace it, and did anything appear that nobody chose.
 
-The format here is deliberately small — name, version, kind, licence, digest,
-supplier — and maps onto the common subset of CycloneDX and SPDX rather than
+The format here is deliberately small (name, version, kind, licence, digest,
+supplier) and maps onto the common subset of CycloneDX and SPDX rather than
 implementing either. A full CycloneDX document is a fine export target; it is a
 poor working representation, and this package does not want a parser dependency
 to answer "what changed".

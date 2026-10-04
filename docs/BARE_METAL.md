@@ -20,7 +20,7 @@ that are usually got wrong.
 | Watchdog | Something that resets a hung node | `PENDING` never ends, so the revert never happens |
 
 The last row is the one most often missing. On Linux the confirmation deadline
-can be a timer in a supervisor process — but a node hung hard enough not to run
+can be a timer in a supervisor process, but a node hung hard enough not to run
 the supervisor is also hung enough not to revert. A hardware watchdog is what
 turns "the deadline expired" into an actual reset.
 
@@ -37,7 +37,7 @@ fw_setenv bootlimit 3                # three failed boots -> altbootcmd
 fw_setenv altbootcmd "setenv boot_targetslot A; boot"   # the rollback
 ```
 
-On a successful application start — **after** the health probe passes, not at
+On a successful application start, **after** the health probe passes, not at
 the end of `rc.local`:
 
 ```bash
@@ -78,13 +78,13 @@ Stronger than Linux, because the bootloader enforces it rather than a process:
 |---|---|
 | `stage()` | write to the secondary slot |
 | `mark_verified()` | image validated: signature and hash |
-| `activate()` | `boot_set_pending()` — a **test** image |
+| `activate()` | `boot_set_pending()`, a **test** image |
 | `confirm()` | `boot_write_img_confirmed()` |
 | `tick()` expiry | the next reset reverts, because nothing confirmed |
 
 Note the difference from Linux: the revert happens on **reset**, not on a timer.
 Something must reset a hung node, and on an MCU that is the independent watchdog
-peripheral — enabled before the application starts, kicked only from a path that
+peripheral, enabled before the application starts, kicked only from a path that
 proves the application is alive. A design without one has a `PENDING` state it
 can never leave.
 
@@ -114,9 +114,9 @@ report = Rollout(nodes, UBootTransport(), probes, verifier, signature_quorum=2).
 
 ## 5. Sizing the confirmation window
 
-Measure, do not guess. Take the slowest node in the fleet, in its worst case — a
+Measure, do not guess. Take the slowest node in the fleet, in its worst case (a
 filesystem check after an unclean shutdown, a cold page cache, a model loading
-from eMMC, an NTP sync the probe depends on — and take the longest cold boot to a
+from eMMC, an NTP sync the probe depends on) and take the longest cold boot to a
 passing probe. Then double it.
 
 A window set too short is a self-inflicted outage, and the operator's first fix
@@ -127,7 +127,7 @@ is to disable rollback entirely. That is worse than any bad image.
 Before this package is worth anything on that board, run this:
 
 1. Update a node. Let it reach `PENDING`.
-2. **Cut the power.** Not a reboot — the switch.
+2. **Cut the power.** Not a reboot: the switch.
 3. Restore power.
 
 **Pass:** it comes back on the old slot.

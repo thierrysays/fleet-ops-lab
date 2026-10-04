@@ -1,4 +1,4 @@
-.PHONY: test smoke unit functional security pentest demo lint types sast audit cover counts qa clean
+.PHONY: test smoke unit functional security pentest demo lint types sast audit cover counts register qa clean
 
 # ------------------------------------------------------------------ the tiers
 # Each answers a different question. See docs/TEST_STRATEGY.md.
@@ -50,10 +50,15 @@ audit:
 counts:
 	python scripts/check_documented_counts.py
 
+# The register is a convention, and a convention nothing reads is one that
+# decays. This reads it.
+register:
+	python scripts/check_prose_register.py
+
 cover:
 	python -m pytest --cov=fleet_ops --cov-report=term-missing --cov-fail-under=90
 
-qa: lint types sast audit counts cover
+qa: lint types sast audit counts register cover
 
 clean:
 	rm -rf run .pytest_cache .mypy_cache .ruff_cache .coverage htmlcov

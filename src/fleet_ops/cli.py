@@ -1,7 +1,7 @@
 """Command line: run a rollout, diff two bills of materials, check a build.
 
 Each subcommand does one thing and prints what happened, including the counts
-that matter — how many nodes rolled back, and how many were never touched
+that matter, how many nodes rolled back, and how many were never touched
 because the rollout stopped itself.
 """
 

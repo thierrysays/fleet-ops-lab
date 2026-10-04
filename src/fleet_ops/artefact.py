@@ -1,7 +1,7 @@
 """What gets shipped, and the manifest that describes it.
 
 An artefact is opaque bytes: a firmware image, a container layer, a tarball, a
-model file. The manifest is the part with opinions — it binds the bytes to a
+model file. The manifest is the part with opinions, it binds the bytes to a
 digest, a version, and a bill of materials, and it is the manifest that gets
 signed.
 
@@ -55,7 +55,7 @@ class Manifest:
     artefact_digest: str
     size: int
     sbom_digest: str
-    #: Digest over the inputs that produced the build — sources, toolchain,
+    #: Digest over the inputs that produced the build, sources, toolchain,
     #: flags. Two builds sharing this and differing in ``artefact_digest`` are
     #: the definition of a non-reproducible build.
     build_inputs_digest: str = ""
@@ -87,7 +87,7 @@ class Manifest:
 
     # ------------------------------------------------------------------ signing
     def to_be_signed(self) -> dict[str, Any]:
-        """The bytes a signature covers — everything except the signatures."""
+        """The bytes a signature covers, everything except the signatures."""
         return {
             "schema": SCHEMA,
             "name": self.name,
@@ -136,7 +136,7 @@ class Manifest:
         """Check signatures with a caller-supplied verifier.
 
         No cryptography is bundled. Whoever runs the fleet already has a key
-        story — a TPM, a cloud KMS, an HSM, a plain Ed25519 key in a file — and
+        story (a TPM, a cloud KMS, an HSM, a plain Ed25519 key in a file) and
         this package will not choose one for them. What it does insist on is that
         an *absent* verifier with a required quorum is a failure, never a skip.
         """
@@ -154,7 +154,7 @@ class Manifest:
                 accepted = bool(verifier(sig["key_id"], sig["signature"], payload))
             except Exception:
                 # A verifier that raises is a verifier that did not accept. The
-                # alternative — letting the exception escape — turns an
+                # alternative (letting the exception escape) turns an
                 # unreachable KMS into a crashed rollout rather than a refused
                 # update, and a crashed rollout is the one that gets retried
                 # with the check switched off.

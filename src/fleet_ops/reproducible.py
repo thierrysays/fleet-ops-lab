@@ -5,8 +5,8 @@ it is. It is more immediately an operations property: without it, "the version
 in the field differs from the version in the repository" is unanswerable, and
 every field incident begins with an argument about what is actually deployed.
 
-The check is unglamorous — hash every file in two build outputs, compare the
-maps — and the value is entirely in the report. "Not reproducible" is useless.
+The check is unglamorous (hash every file in two build outputs, compare the
+maps) and the value is entirely in the report. "Not reproducible" is useless.
 "``build/timestamp.txt`` and ``lib/foo.so`` differ, the rest match" is a
 morning's work, and usually turns out to be an embedded build date, an absolute
 path, or a directory iteration order.

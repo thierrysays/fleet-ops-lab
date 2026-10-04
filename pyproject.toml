@@ -40,11 +40,11 @@ addopts = "-q --strict-markers"
 # Tiers, so a gate can select one. The names are the contract with the Makefile
 # and with CI; renaming one silently disables a job.
 markers = [
-    "smoke: does it start at all — seconds, no fleet, run first",
+    "smoke: does it start at all, seconds, no fleet, run first",
     "unit: one behaviour of one module, at its boundary",
     "functional: a requirement from docs/FUNCTIONAL_SPEC.md, end to end",
     "security: input handling, path safety, and what must not be trusted",
-    "pentest: adversarial — attacks on the two rules, not exercises of them",
+    "pentest: adversarial, attacks on the two rules, not exercises of them",
     "hardware: requires a real board with two slots; skipped unless FOL_HARDWARE is set",
 ]
 

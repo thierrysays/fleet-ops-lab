@@ -3,7 +3,7 @@
 The sequence is fixed, and the order is load-bearing:
 
 1. **Transfer** the artefact and its manifest.
-2. **Verify the signature** on the manifest — with a verifier the caller
+2. **Verify the signature** on the manifest: with a verifier the caller
    supplied, because an absent verifier is a failed check and not a skipped one.
 3. **Verify the digest** of the bytes against the manifest that was just proven
    authentic. In that order: checking a digest against an unauthenticated

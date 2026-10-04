@@ -5,7 +5,7 @@ waiting for one bad build. The mitigation is old: send it to a few, watch, then
 widen. What matters is what happens when the few fail.
 
 Here, the halt is structural. A wave whose failure ratio exceeds its budget stops
-the rollout, and there is no flag to continue — because the flag would be set at
+the rollout, and there is no flag to continue, because the flag would be set at
 three in the morning by someone who has been awake for nineteen hours and wants
 the deployment finished. A stopped rollout leaves the remaining nodes on the old
 version, which is the version that was working.

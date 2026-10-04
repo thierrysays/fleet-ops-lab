@@ -46,8 +46,8 @@ def test_the_package_never_evaluates_what_it_reads():
 def test_the_package_never_executes_a_downloaded_artefact():
     """The payload is opaque bytes here. Installing it is the deployment's job.
 
-    Deliberate: a model that stages, verifies and hands over — rather than one
-    that also runs what it staged — keeps the dangerous step where the operator
+    Deliberate: a model that stages, verifies and hands over (rather than one
+    that also runs what it staged) keeps the dangerous step where the operator
     can see it.
     """
     sources = " ".join(f.read_text() for f in SRC.rglob("*.py"))
@@ -76,7 +76,7 @@ def test_a_partial_write_never_replaces_a_good_blob(tmp_path):
     """Write to a temporary name, rename into place.
 
     A process killed mid-write must leave the previous image intact rather than
-    a truncated one — on a node, that difference is a brick.
+    a truncated one, on a node, that difference is a brick.
     """
     t = LocalDirTransport(tmp_path)
     t.put("n1", "image.bin", b"good-image")

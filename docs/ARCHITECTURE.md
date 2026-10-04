@@ -18,8 +18,7 @@ follows from taking that seriously.
 
 ## 1. Activation is a promise to try
 
-The straightforward sequence — write the new image, switch the boot slot, reboot
-— is correct whenever the new image works. When it does not, it has produced a
+The straightforward sequence (write the new image, switch the boot slot, reboot) is correct whenever the new image works. When it does not, it has produced a
 node that needs a lorry.
 
 So activation here sets `PENDING` and starts a deadline the node holds itself.
@@ -44,7 +43,7 @@ the halt fires correctly, and it is set by someone who has been awake for
 nineteen hours.
 
 `Rollout.run(plan, artefact, manifest)` takes no fourth parameter. Resuming a
-halted rollout means writing a new plan — which is data, in a file, reviewable
+halted rollout means writing a new plan, which is data, in a file, reviewable
 before the rollout starts rather than typed during the incident. A permissive
 plan is possible and that is fine: the judgement is visible in a diff.
 
@@ -66,7 +65,7 @@ investigated.
 ## 4. Signature before digest
 
 Verifying the digest against a manifest whose signature has not been checked
-proves the download was not corrupted. That was never the question — a hostile
+proves the download was not corrupted. That was never the question, a hostile
 manifest describes hostile bytes perfectly.
 
 So `update_node` authenticates the manifest, then binds the bytes to it. The
@@ -77,7 +76,7 @@ proven.
 
 Slots, a digest, a probe, a transport. Whether that is a Linux SBC with two
 rootfs partitions, an MCU with two flash banks, or a workload on a k3s cluster
-belongs to the deployment — [ORCHESTRATORS.md](ORCHESTRATORS.md) maps the model
+belongs to the deployment, [ORCHESTRATORS.md](ORCHESTRATORS.md) maps the model
 onto RAUC, Mender, SWUpdate, MCUboot, k3s and balena.
 
 The same reasoning applies to cryptography and to transport: whoever runs a

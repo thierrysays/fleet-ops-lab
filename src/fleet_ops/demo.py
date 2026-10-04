@@ -1,20 +1,20 @@
 """A deterministic rollout across a simulated fleet, with things going wrong.
 
 The scenario is fixed and the failures are planted, because a demo where
-everything succeeds demonstrates nothing. Twelve nodes in three waves — a
-canary, a pilot, then the rest — and four planted failures, all in the pilot:
+everything succeeds demonstrates nothing. Twelve nodes in three waves (a
+canary, a pilot, then the rest) and four planted failures, all in the pilot:
 
-* ``node-03`` is never reachable — the transfer fails and it stays on the old
+* ``node-03`` is never reachable: the transfer fails and it stays on the old
   version, which is the correct outcome and not an incident;
-* ``node-04`` gets a truncated download — the digest check catches bytes that
+* ``node-04`` gets a truncated download: the digest check catches bytes that
   arrived successfully and are wrong, which is the failure mode a "did the
   download succeed" check misses entirely;
-* ``node-05`` comes up and fails its health probe — it rolls itself back;
-* ``node-06`` has no health probe configured — treated as a *failed* probe and
+* ``node-05`` comes up and fails its health probe: it rolls itself back;
+* ``node-06`` has no health probe configured: treated as a *failed* probe and
   rolled back, because a node nobody can ask about does not get to keep a
   change.
 
-Four failures against a pilot budget of 20% on five nodes — one tolerated — so
+Four failures against a pilot budget of 20% on five nodes (one tolerated) so
 the rollout halts before the third wave. Six nodes are never touched and stay on
 the version that was working.
 
